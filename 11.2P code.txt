@@ -1,0 +1,57 @@
+int led1 = D5; //green LED
+int led2 = D6; //orange LED
+int led3 = D7; //red LED
+int soil = 0; //set soil moisture data as int and initialization
+//soil moisture connected to A1
+int Moisture = A1;
+
+void setup() {
+    pinMode(led1, OUTPUT); //set up LED 
+    pinMode(led2, OUTPUT);
+    pinMode(led3, OUTPUT);
+    pinMode(Moisture, INPUT); //set up soil moisture sensor
+}
+
+void loop() {
+    //store collected soil moisture data
+    soil = analogRead(Moisture);
+    
+    //Corresponding to different plants you can change the value
+    if(soil < 40 && soil > 0)
+    {
+        //light up red LED and switch off other LED this LED means the current soil moisture is low(dry)
+        digitalWrite(led3, HIGH);
+        digitalWrite(led1, LOW);
+        digitalWrite(led2, LOW);
+        
+        //upload data to thingspeak every 5 second
+        Particle.publish("soil", String(soil), PRIVATE);
+        delay(5000);
+    }
+    
+    if(soil >= 40 && soil < 50)
+    {
+        //light up orange LED and switch off other LED this LED means the current soil moisture is moderate
+        digitalWrite(led2, HIGH);
+        digitalWrite(led1, LOW);
+        digitalWrite(led3, LOW);
+        
+        //upload data to thingspeak every 5 second
+        Particle.publish("soil", String(soil), PRIVATE);
+        delay(5000);
+    }
+    
+  
+    if(soil >= 50)
+    {
+      //light up green LED and switch off other LED this LED means the current soil moisture is good for plant
+        digitalWrite(led1, HIGH);
+        digitalWrite(led2, LOW);
+        digitalWrite(led3, LOW);
+        
+        //upload data to thingspeak every 5 second
+        Particle.publish("soil", String(soil), PRIVATE);
+        delay(5000);
+    }
+
+}
